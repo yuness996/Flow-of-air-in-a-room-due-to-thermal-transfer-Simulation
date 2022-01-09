@@ -1,0 +1,87 @@
+opti dime 2 elem tri6 densite 0.3;
+
+t1=10.;
+t2=50.;
+tref=20.;
+t0=10.;
+
+nu=0.00002;
+gb=0. (-9.8/300.);
+alph=0.00002;
+
+p1=0. 0.;
+p2=2. 0.;
+p3=2. 1.; 
+p4= 2. 3.;
+p5=0. 3.;
+p6=0. 1.5;
+
+d12=d p1 p2;
+d23=d p2 p3;
+d34=d p3 p4; 
+d45=d p4 p5;
+d56=d p5 p6; 
+d61=d p6 p1;
+
+paroi=d12 et d23 et d34 et d45 et d56 et d61;
+
+mailt=surf paroi;
+
+mailtf=chan mailt quaf;
+
+mtf=mode mailtf navier_stokes macro;
+
+rv = eqex mtf itma 10000 fidt 200
+         zone mtf oper ns nu gb tn tref inco un
+         zone mtf oper tsca alph un 0. inco tn
+         opti centree
+         zone mtf oper dfdt 1. un deltat inco un 
+         zone mtf oper dfdt 1. tn deltat inco tn ;
+
+rv = eqex rv clim un uimp paroi 0.
+                  un vimp paroi 0.
+                  tn timp d23 t2
+                  tn timp d56 t1;
+
+rv.pression = eqpr mtf zone mtf 
+                   oper pression 0. pimp 0.;
+
+rv.inco.un = kcht mtf vect sommet (0. 0.);
+
+rv.inco.tn=kcht mtf scal sommet t0;
+
+*initialisation
+rv.inco.poiobs = mailtf point proc (1. 1.) ;
+rv.inco.ti = prog 0. ;
+
+*'progression' = colonne, ici les instants d'observations en seconde
+rv.inco.tobs = prog t0 ;
+*t0 temperature initiale
+
+*avant exec 
+rv = eqex rv zone mtf oper tt ;
+
+*bloc procedurei
+debp tt ;
+argu rw*table ;
+z = redu rv.inco.tn rv.inco.poiobs ;
+
+zz = prog (extr z scal rv.inco.poiobs) ;
+
+rv.inco.tobs = rv.inco.tobs ET zz ;
+tti = prog rv.pasdetps.tps ; 
+
+rv.inco.ti = rv.inco.ti ET tti ;
+
+mat1 chp1 = kops matrik ;
+
+resp mat1 chp1 ;
+
+finp ;
+
+exec rv;
+
+opti sauv 'El_Kaderi_Yunos.sv';
+
+sauv;
+

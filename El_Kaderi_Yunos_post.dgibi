@@ -1,0 +1,30 @@
+opti rest 'El_Kaderi_Yunos.sv';
+
+rest;
+
+trac titr 'tn' mailt rv.inco.tn;
+
+trac titr 'pression' mailt rv.pression.pn;
+
+trac titr 'un' mailt (vect 15 rv.inco.un);
+
+evol2 = evol manu 't' rv.inco.ti 'tn' rv.inco.tobs ;
+
+dess evol2 ;
+
+*D.T = grandien dT/dx , dT,dy
+
+dtn = kops rv.inco.tn grads mtf ;
+
+tnx = exco ux dtn ;
+
+evol56 = evol chpo tnx d56 ;
+evol23 = evol chpo tnx d23 ;
+
+dess evol56 ;
+
+flu56 = 0.026 *  (intg evol56) ;
+
+opti sort 'tobs.dat' ;
+sort excel evol2 'SEPA' 'ESPA' ; 
+
