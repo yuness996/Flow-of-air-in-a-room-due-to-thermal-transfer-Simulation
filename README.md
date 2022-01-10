@@ -1,3 +1,3 @@
-# Thermal-transfer-in-a-room-Modeling
-Simulate the evolution of air in a room with hot radiator and cold window using Navier Stokes equation. 
-Castem21 software done by cea is used to do this simulation.
+# Flow-of-air-in-a-room-due-to-thermal-transfer-Simulation
+Model a room with a radiator generating heat and a cold window, 
+then using Navier Stokes simulate the evolution of the flow and the mean temperature of the room. 
